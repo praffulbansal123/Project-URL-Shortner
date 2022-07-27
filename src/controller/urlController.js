@@ -2,6 +2,27 @@ const UrlModel = require('../model/urlModel')
 const createError = require('http-errors')
 const { nanoid } = require('nanoid')
 const { isValid, urlschema } = require('../utils/validator')
+const redis = require('redis')
+const { promisify } = require('util')
+
+//----------------------------------Redis-----------------------------------------------------------------//
+const redisClient = redis.createClient(
+    18737,
+    "redis-18737.c245.us-east-1-3.ec2.cloud.redislabs.com", { no_ready_check: true }
+);
+
+redisClient.auth("yYakwkjGgnOPwetUbnN8GgtEkK5i3bth", function(err) {
+    if (err) throw err;
+});
+
+redisClient.on("connect", async function() {
+    console.log("connected to Redis..");
+});
+
+const SET_ASYNC = promisify(redisClient.SET).bind(redisClient);
+const GET_ASYNC = promisify(redisClient.GET).bind(redisClient);
+
+//---------------------------Creating URL shortner--------------------------------------------------------//
 
 
 
